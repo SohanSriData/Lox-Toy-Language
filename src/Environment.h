@@ -4,7 +4,7 @@ using namespace std;
 #include <variant> 
 #include <string>
 #include "RuntimeError.h"
-using Object = variant<monostate, double, string, bool>;
+using Object = variant<monostate, double, string, bool, shared_ptr<LoxCallable>>;
 
 class Environment {
     private:

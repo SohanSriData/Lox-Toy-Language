@@ -8,7 +8,7 @@
 #include "Parser.cpp"
 #include "AstPrinter.cpp"
 #include "RuntimeError.h"
-#include "Interpreter.cpp"
+#include "Interpreter.h"
 //#include "Token.h"
 using namespace std;
 

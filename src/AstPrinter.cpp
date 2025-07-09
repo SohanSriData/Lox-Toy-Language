@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <variant>  
-using Object = std::variant<std::monostate, double, std::string, bool>;
+#include "Forward.h"
 // AstPrinter.h contents
 class AstPrinter : Expr::Visitor {
 public:

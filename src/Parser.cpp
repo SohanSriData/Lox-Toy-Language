@@ -103,6 +103,9 @@ class Parser {
         }
         shared_ptr<Stmt> declaration(){
             try{
+                if (match({TokenType::FUNC})){
+                    return function("function");
+                }
                 if (match({TokenType::VAR})) return varDeclaration();
                 return statement();
             } catch (Parser::ParseError& e) {
@@ -200,24 +203,24 @@ class Parser {
             return make_shared<Expression>(expr);
         }
 
-        // shared_ptr<Stmt> function(string kind){
-        //     Token name = consume(TokenType::IDENTIFIER, "Expect " + kind + " name.");
-        //     consume(TokenType::LEFT_PAREN, "Expect '(' after "+kind+" name.");
-        //     vector<Token> parameters;
-        //     if (!check(TokenType::RIGHT_PAREN)){
-        //         do{
-        //             if (parameters.size() >= 255){
-        //                 error(peek(), "Can't have more than 255 parameters.");
-        //             }
-        //             parameters.push_back(consume(TokenType::IDENTIFIER, "Expect parameter name."));
-        //         } while(match({TokenType::COMMA}));
-        //         }
-        //         consume(TokenType::RIGHT_PAREN, "Expect ')' after parameters.");
+        shared_ptr<Stmt> function(string kind){
+            Token name = consume(TokenType::IDENTIFIER, "Expect " + kind + " name.");
+            consume(TokenType::LEFT_PAREN, "Expect '(' after "+kind+" name.");
+            vector<Token> parameters;
+            if (!check(TokenType::RIGHT_PAREN)){
+                do{
+                    if (parameters.size() >= 255){
+                        error(peek(), "Can't have more than 255 parameters.");
+                    }
+                    parameters.push_back(consume(TokenType::IDENTIFIER, "Expect parameter name."));
+                } while(match({TokenType::COMMA}));
+                }
+                consume(TokenType::RIGHT_PAREN, "Expect ')' after parameters.");
 
-        //         consume(TokenType::LEFT_BRACE, "Expect '{' before "+kind+" body.");
-        //         vector<shared_ptr<Stmt>> body = block();
-        //         return make_shared<Function>(name, parameters, body);
-        //     }
+                consume(TokenType::LEFT_BRACE, "Expect '{' before "+kind+" body.");
+                vector<shared_ptr<Stmt>> body = block();
+                return make_shared<Function>(name, parameters, body);
+            }
             
         
 
@@ -318,7 +321,34 @@ class Parser {
                 shared_ptr<Expr> right = unary();
                 return make_shared<Unary>(operatorToken,right);
             }
-            return primary();
+            return call();
+        }
+
+        shared_ptr<Expr> finishCall(shared_ptr<Expr> callee){
+            vector<shared_ptr<Expr>> arguments;
+            if(!check(TokenType::RIGHT_PAREN)){
+                do{
+                    if(arguments.size() >= 255){
+                        error(peek(), "Can't have more than 255 arguments.");
+                    }
+                    arguments.push_back(expression());
+                }while (match({TokenType::COMMA}));              
+            }
+            Token paren = consume(TokenType::RIGHT_PAREN, "Expect ')' after arguments.");
+            return make_shared<Call>(callee,paren,arguments);
+        }
+
+        shared_ptr<Expr> call(){
+            shared_ptr<Expr> expr = primary();
+
+            while(true){
+                if(match({TokenType::LEFT_PAREN})){
+                    expr = finishCall(expr);
+                }else {
+                    break;
+                }
+            }
+            return expr;
         }
 
         shared_ptr<Expr> primary(){

@@ -1,27 +1,31 @@
-// #include "LoxCallable.h"
-// using namespace std;
+// LoxFunction.cpp
 
-// class LoxFunction : public LoxCallable {
-//     private:
-//         shared_ptr<Function> declaration;
-//         LoxFunction(shared_ptr<Function> declaration){
-//             this->declaration = declaration;
-//         }
+#include "LoxFunction.h"
 
-//     public:
-//         Object call(Interpreter* interpreter, vector<Object> arguments) {
-        
-//         Environment environment(interpreter->getGlobals());
-//         for(int i=0; i< declaration->params.size(); i++){
-//             environment.define(declaration->params[i].lexeme, arguments[i]);
-//         }
-//         interpreter->executeBlock(declaration->body, make_shared<Environment>(environment));
-//         return monostate();
-//         }
-//         size_t arity() const override {
-//             return declaration->params.size();
-//         }
-//         string toString(){
-//             return "<function " + declaration->name.lexeme + ">";
-//         }
-// };
+LoxFunction::LoxFunction(Function* declaration)
+    : declaration(declaration) {
+}
+
+Object LoxFunction::call(Interpreter* interpreter,
+                         std::vector<Object> arguments) {
+    // Create a new environment for the function call
+    Environment environment(interpreter->getGlobals());
+
+    for (size_t i = 0; i < declaration->params.size(); i++) {
+        environment.define(declaration->params[i].lexeme, arguments[i]);
+    }
+
+    interpreter->executeBlock(
+        declaration->body,
+        std::make_shared<Environment>(environment));
+
+    return std::monostate();
+}
+
+size_t LoxFunction::arity() const {
+    return declaration->params.size();
+}
+
+std::string LoxFunction::toString() {
+    return "<function " + declaration->name.lexeme + ">";
+}

@@ -1,9 +1,11 @@
 #pragma once
 #include <memory>
 #include "Token.h"
+#include "Forward.h"
 using namespace std;
 
-using Object = std::variant<std::monostate, double, std::string, bool>;
+class LoxCallable;
+using Object = std::variant<std::monostate, double, std::string, bool, shared_ptr<LoxCallable>>;
 
 class Expr {
 public:
@@ -12,6 +14,7 @@ class Visitor {
 public:
    virtual Object visitAssignExpr(class Assign* Expr) = 0;
    virtual Object visitBinaryExpr(class Binary* Expr) = 0;
+   virtual Object visitCallExpr(class Call* Expr) = 0;
    virtual Object visitGroupingExpr(class Grouping* Expr) = 0;
    virtual Object visitLiteralExpr(class Literal* Expr) = 0;
    virtual Object visitLogicalExpr(class Logical* Expr) = 0;
@@ -41,6 +44,18 @@ public:
     shared_ptr<Expr> right;
 	Object accept (Expr::Visitor* visitor) override {
     return visitor->visitBinaryExpr(this);
+}
+
+};
+
+class Call : public Expr {
+public:
+    Call(shared_ptr<Expr> callee, Token paren, vector<shared_ptr<Expr>> arguments) : callee(callee), paren(paren), arguments(arguments) {}
+    shared_ptr<Expr> callee;
+    Token paren;
+    vector<shared_ptr<Expr>> arguments;
+	Object accept (Expr::Visitor* visitor) override {
+    return visitor->visitCallExpr(this);
 }
 
 };

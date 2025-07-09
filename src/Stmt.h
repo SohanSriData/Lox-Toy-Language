@@ -2,9 +2,11 @@
 #pragma once
 #include <memory>
 #include "Token.h"
+#include "Forward.h"
 using namespace std;
 
-using Object = std::variant<std::monostate, double, std::string, bool>;
+class LoxCallable;
+using Object = std::variant<std::monostate, double, std::string, bool, shared_ptr<LoxCallable>>;
 
 class Stmt {
 public:
@@ -13,6 +15,7 @@ class Visitor {
 public:
    virtual Object visitBlockStmt(class Block* Stmt) = 0;
    virtual Object visitExpressionStmt(class Expression* Stmt) = 0;
+   virtual Object visitFunctionStmt(class Function* Stmt) = 0;
    virtual Object visitIfStmt(class If* Stmt) = 0;
    virtual Object visitPrintStmt(class Print* Stmt) = 0;
    virtual Object visitVarStmt(class Var* Stmt) = 0;
@@ -38,6 +41,18 @@ public:
     shared_ptr<Expr> expression;
 	Object accept (Stmt::Visitor* visitor) override {
     return visitor->visitExpressionStmt(this);
+}
+
+};
+
+class Function : public Stmt {
+public:
+    Function(Token name, vector<Token> params, vector<shared_ptr<Stmt>> body) : name(name), params(params), body(body) {}
+    Token name;
+    vector<Token> params;
+    vector<shared_ptr<Stmt>> body;
+	Object accept (Stmt::Visitor* visitor) override {
+    return visitor->visitFunctionStmt(this);
 }
 
 };

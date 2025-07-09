@@ -1,6 +1,7 @@
 #include "TokenType.h"
 #include <string>
 #include <variant>
+#include <vector>
 #pragma once
 using namespace std;
 

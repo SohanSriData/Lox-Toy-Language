@@ -89,8 +89,10 @@ void defineAst(const string& outputDir, const string& baseName, const vector<str
     writer << "#pragma once\n";
     writer << "#include <memory>\n";
     writer << "#include \"Token.h\"\n";
+    writer << "#include \"Forward.h\"\n";
     writer << "using namespace std;\n\n";
-    writer << "using Object = std::variant<std::monostate, double, std::string, bool>;\n\n";
+    writer << "class LoxCallable;\n";
+    writer << "using Object = std::variant<std::monostate, double, std::string, bool, shared_ptr<LoxCallable>>;\n\n";
     writer << "class " << baseName << " {\n";
     writer << "public:\n";
     writer << "    virtual ~" << baseName << "() = default;\n";
@@ -119,7 +121,7 @@ int main(int argc, char** argv) {
     defineAst(outputDir, "Expr", {
         "Assign   : Token name, shared_ptr<Expr> value",
         "Binary   : shared_ptr<Expr> left, Token operatorToken, shared_ptr<Expr> right",
-    //    "Call     : shared_ptr<Expr> callee, Token paren, vector<shared_ptr<Expr>> arguments",
+        "Call     : shared_ptr<Expr> callee, Token paren, vector<shared_ptr<Expr>> arguments",
         "Grouping : shared_ptr<Expr> expression",
         "Literal  : Token value",
         "Logical : shared_ptr<Expr> left, Token operatorToken, shared_ptr<Expr> right",
@@ -130,7 +132,7 @@ int main(int argc, char** argv) {
     defineAst(outputDir, "Stmt", {
         "Block : vector<shared_ptr<Stmt>> statements",
         "Expression : shared_ptr<Expr> expression",
-    //    "Function : Token name, vector<Token> params, vector<shared_ptr<Stmt>> body",
+        "Function : Token name, vector<Token> params, vector<shared_ptr<Stmt>> body",
         "If : shared_ptr<Expr> condition, shared_ptr<Stmt> thenBranch, shared_ptr<Stmt> elseBranch",
         "Print : shared_ptr<Expr> expression",
         "Var : Token name, shared_ptr<Expr> initializer",
