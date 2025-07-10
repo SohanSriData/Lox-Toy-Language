@@ -135,6 +135,7 @@ int main(int argc, char** argv) {
         "Function : Token name, vector<Token> params, vector<shared_ptr<Stmt>> body",
         "If : shared_ptr<Expr> condition, shared_ptr<Stmt> thenBranch, shared_ptr<Stmt> elseBranch",
         "Print : shared_ptr<Expr> expression",
+        "Return : Token keyword, shared_ptr<Expr> value",
         "Var : Token name, shared_ptr<Expr> initializer",
         "While : shared_ptr<Expr> condition, shared_ptr<Stmt> body",
     });

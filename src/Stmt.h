@@ -18,6 +18,7 @@ public:
    virtual Object visitFunctionStmt(class Function* Stmt) = 0;
    virtual Object visitIfStmt(class If* Stmt) = 0;
    virtual Object visitPrintStmt(class Print* Stmt) = 0;
+   virtual Object visitReturnStmt(class Return* Stmt) = 0;
    virtual Object visitVarStmt(class Var* Stmt) = 0;
    virtual Object visitWhileStmt(class While* Stmt) = 0;
 };
@@ -75,6 +76,17 @@ public:
     shared_ptr<Expr> expression;
 	Object accept (Stmt::Visitor* visitor) override {
     return visitor->visitPrintStmt(this);
+}
+
+};
+
+class Return : public Stmt {
+public:
+    Return(Token keyword, shared_ptr<Expr> value) : keyword(keyword), value(value) {}
+    Token keyword;
+    shared_ptr<Expr> value;
+	Object accept (Stmt::Visitor* visitor) override {
+    return visitor->visitReturnStmt(this);
 }
 
 };

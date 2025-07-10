@@ -93,6 +93,9 @@ class Parser {
             if (match({TokenType::PRINT})){
                 return printStatement();
             }
+            if (match({TokenType::RETURN})){
+                return returnStatement();
+            }
             if (match({TokenType::WHILE})){
                 return whileStatement();
             }
@@ -195,6 +198,16 @@ class Parser {
             shared_ptr<Expr> expr = expression();
             consume(TokenType::SEMICOLON, "Expect ';' after value.");
             return make_shared<Print>(expr);
+        }
+
+        shared_ptr<Stmt> returnStatement(){
+            Token keyword = previous();
+            shared_ptr<Expr> value = nullptr;
+            if (!check(TokenType::SEMICOLON)){
+                value = expression();
+            }
+            consume(TokenType::SEMICOLON, "Expect ';' after return value.");
+            return make_shared<Return>(keyword, value);
         }
 
         shared_ptr<Stmt> expressionStatement(){

@@ -9,6 +9,7 @@ using namespace std;
 #include "Stmt.h"
 #include "Environment.h"
 #include "RuntimeError.h"
+#include "Return.cpp"
 #include "LoxCallable.h"
 #include "LoxFunction.h" // Use header, not .cpp
 
@@ -28,16 +29,17 @@ shared_ptr<Environment> Interpreter::getGlobals() const { return globals; }
 shared_ptr<Environment> Interpreter::getEnvironment() const { return environment; }
 
 void Interpreter::executeBlock(vector<shared_ptr<Stmt>> statements, shared_ptr<Environment> newEnv) {
-    auto previous = environment;
-    environment = newEnv;
+    auto previous = this->environment;    
     try {
+        this->environment = newEnv;
         for (const auto& statement : statements) {
             execute(statement);
         }
     } catch (RuntimeError& error) {
+        this->environment = previous;
         cerr << "Runtime error: " << error.what() << endl;
     }
-    environment = previous;
+    this->environment = previous;
 }
 
 Object Interpreter::visitLiteralExpr(Literal* expr) {
@@ -180,6 +182,14 @@ Object Interpreter::visitPrintStmt(Print* stmt) {
     Object value = evaluate(stmt->expression);
     cout << stringify(value) << endl;
     return std::monostate{};
+}
+
+Object Interpreter::visitReturnStmt(Return* stmt) {
+    Object value = monostate();
+    if(stmt->value != nullptr) {
+        value = evaluate(stmt->value);
+    }
+    throw ReturnClass(value); 
 }
 
 Object Interpreter::visitVarStmt(Var* stmt) {

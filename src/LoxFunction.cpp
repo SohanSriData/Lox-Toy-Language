@@ -1,24 +1,27 @@
 // LoxFunction.cpp
 
 #include "LoxFunction.h"
+#include "Return.cpp"
+#include <iostream>
 
 LoxFunction::LoxFunction(Function* declaration)
     : declaration(declaration) {
 }
 
 Object LoxFunction::call(Interpreter* interpreter,
-                         std::vector<Object> arguments) {
+                         vector<Object> arguments) {
     // Create a new environment for the function call
-    Environment environment(interpreter->getGlobals());
+    shared_ptr<Environment> environment = make_shared<Environment>(interpreter->getGlobals());
 
     for (size_t i = 0; i < declaration->params.size(); i++) {
-        environment.define(declaration->params[i].lexeme, arguments[i]);
+        environment->define(declaration->params[i].lexeme, arguments[i]);
     }
-
-    interpreter->executeBlock(
-        declaration->body,
-        std::make_shared<Environment>(environment));
-
+    try{
+    interpreter->executeBlock(declaration->body, environment);
+    } catch (ReturnClass& returnValue) {
+        // If a return statement was encountered, return its value
+        return returnValue.getValue();
+    } 
     return std::monostate();
 }
 

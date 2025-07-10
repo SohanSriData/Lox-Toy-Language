@@ -35,6 +35,7 @@ public:
     Object visitFunctionStmt(Function* stmt) override;
     Object visitIfStmt(If* stmt) override;
     Object visitPrintStmt(Print* stmt) override;
+    Object visitReturnStmt(Return* stmt) override;
     Object visitVarStmt(Var* stmt) override;
     Object visitWhileStmt(While* stmt) override;
 
