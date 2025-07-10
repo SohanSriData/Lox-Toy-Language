@@ -72,7 +72,7 @@ greet("World");
 
 * [x] Arithmetic expressions
 * [x] Variable declarations
-* [ ] Lexical Scope
+* [x] Lexical Scope
 * [x] Control flow
 * [x] User-defined functions
 * [ ] User-defined classes
