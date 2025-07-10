@@ -75,6 +75,8 @@ greet("World");
 * [x] Control flow
 * [x] User-defined functions
 * [ ] User-defined classes
+* [ ] Arrays
+* [ ] Lists
 
 ---
 
