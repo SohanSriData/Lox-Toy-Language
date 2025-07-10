@@ -9,7 +9,7 @@ A simple tree-walking interpreter for a custom programming language.
 - Variable declarations and assignments
 - Control flow (`if`, `while`, etc.)
 - User-defined functions
-- **Coming soon**: User-defined classes
+- **Coming soon**: User-defined classes, Arrays, Lists
 
 ## Getting Started
 
