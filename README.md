@@ -1,5 +1,5 @@
 
-# MyTreewalkInterpreter
+# Toy Language Interpreter
 
 A simple tree-walking interpreter for a custom programming language.
 
